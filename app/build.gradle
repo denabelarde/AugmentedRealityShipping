@@ -1,0 +1,163 @@
+apply plugin: 'com.android.application'
+apply from: '../gradle/dexcount.gradle'
+apply from: '../gradle/jacoco.gradle'
+apply from: '../gradle/quality.gradle'
+
+
+android {
+    compileSdkVersion versions.compileSdk
+    buildToolsVersion versions.buildTools
+    defaultConfig {
+        minSdkVersion versions.minSdk
+        targetSdkVersion versions.targetSdk
+        versionCode versions.code
+        versionName versions.name
+        multiDexEnabled false
+        vectorDrawables.useSupportLibrary = true
+        testInstrumentationRunner "com.augmentedreality.simplus.MockTestRunner"
+        // puts the exported Room database schema into a directory
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    buildTypes {
+        release {
+            //this is how you turn on obfuscation
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    lintOptions {
+        warningsAsErrors true
+        abortOnError true
+
+        // temporarily allowed until Butterknife becomes 9.0.0, when its
+        // butterknife.lint.InvalidR2UsageDetector Lint bug is fixed
+        disable 'ObsoleteLintCustomCheck'
+
+        // disabled to allow MenuBuilder.setOptionalIconsVisible
+        disable 'RestrictedApi'
+
+        disable lintExemptions.googleAppIndexingWarning
+        disable lintExemptions.logNotTimber
+        disable lintExemptions.missingConstraints
+        disable lintExemptions.invalidPackage
+        disable lintExemptions.setTextI18n
+        disable lintExemptions.allowBackUp
+        disable lintExemptions.trulyRandom
+        disable lintExemptions.vectorPath
+    }
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'LICENSE.txt'
+        exclude 'META-INF/rxjava.properties'
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+    }
+    sourceSets {
+        test.java.srcDir 'src/tests/api/java'
+        test.java.srcDir 'src/tests/commons/java'
+        test.java.srcDir 'src/tests/unit/java'
+        androidTest.java.srcDir 'src/tests/android/java'
+        androidTest.java.srcDir 'src/tests/commons/java'
+
+    }
+    testOptions {
+        execution 'ANDROID_TEST_ORCHESTRATOR'
+    }
+    testOptions.unitTests.all {
+        testLogging {
+            events 'failed'
+            exceptionFormat
+
+            // if not set, roboletric tests will not be included in coverage
+            jacoco {
+                includeNoLocationClasses = true
+            }
+        }
+    }
+    configurations.all {
+        resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
+    }
+    buildToolsVersion '28.0.3'
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestImplementation libraries.dagger
+    androidTestImplementation libraries.supportAnnotations
+    androidTestImplementation libraries.supportAppCompat
+    androidTestImplementation libraries.supportDesign
+    androidTestImplementation libraries.supportRecyclerView
+    androidTestImplementation testLibraries.assertJ
+    androidTestImplementation testLibraries.dexmaker
+    androidTestImplementation testLibraries.dexmakerDx
+    androidTestImplementation testLibraries.dexmakerMockito
+    androidTestImplementation testLibraries.espressoCore
+    androidTestImplementation testLibraries.espressoIntents
+    androidTestImplementation testLibraries.espressoContrib
+    androidTestImplementation(testLibraries.mockWebServer) {
+        exclude group: 'com.squareup.okhttp3', module: 'okhttp'
+        exclude group: 'com.squareup.okio', module: 'okio'
+    }
+    androidTestImplementation testLibraries.testRules
+    androidTestAnnotationProcessor libraries.daggerCompiler
+    androidTestImplementation testLibraries.testRunner
+    androidTestUtil testLibraries.testOrchestrator
+    implementation libraries.butterknife
+    annotationProcessor libraries.butterknifeCompiler
+    annotationProcessor libraries.daggerCompiler
+    annotationProcessor libraries.daggerProcessor
+    annotationProcessor libraries.roomProcessor
+    annotationProcessor libraries.glideCompiler
+    implementation libraries.supportV4
+    implementation libraries.constraintLayout
+    implementation libraries.dagger
+    implementation libraries.daggerAndroidSupport
+    implementation libraries.dataFactory
+    implementation libraries.gson
+    implementation libraries.lifecycleCommons
+    implementation libraries.lifecycleExtensions
+    implementation libraries.mosbyMvp
+    implementation libraries.okHttpLogging
+    implementation libraries.retrofit
+    implementation libraries.retrofitGsonConverter
+    implementation libraries.retrofitRxJavaAdapter
+    implementation libraries.room
+    implementation libraries.roomRxJava2
+    implementation libraries.rxAndroid
+    implementation libraries.rxJava
+    implementation libraries.supportAnnotations
+    implementation libraries.supportAppCompat
+    implementation libraries.supportCoreUtils
+    implementation libraries.supportDesign
+    implementation libraries.timber
+    implementation libraries.sdp
+    implementation libraries.shimmer
+    implementation libraries.firebaseCore
+
+    implementation(libraries.glide) {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    }
+
+    implementation 'com.google.android.gms:play-services-location:16.0.0'
+    debugImplementation debugTools.leakCanary
+    releaseImplementation debugTools.leakCanaryRelease
+    testImplementation testLibraries.androidArchitectureCore
+    testImplementation testLibraries.assertJ
+    testImplementation testLibraries.junit
+    testImplementation testLibraries.mockito
+    testImplementation(testLibraries.mockWebServer) {
+        exclude group: 'com.squareup.okhttp3', module: 'okhttp'
+        exclude group: 'com.squareup.okio', module: 'okio'
+    }
+    testImplementation testLibraries.robolectric
+    testImplementation testLibraries.roomMigration
+}

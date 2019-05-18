@@ -1,0 +1,52 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+apply from: 'gradle/dependencies.gradle'
+
+buildscript {
+    apply from: 'gradle/dependencies.gradle'
+
+    repositories {
+        google()
+        jcenter()
+        mavenCentral()
+        maven {
+            url 'https://maven.google.com/'
+            name 'Google'
+        }
+    }
+    dependencies {
+        classpath gradlePlugins.android
+        classpath gradlePlugins.dexcount
+        classpath gradlePlugins.jacoco
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+        maven {
+            url "https://maven.google.com"
+            name 'Google'
+        }
+        maven {
+            url "https://jitpack.io"
+            name 'Jitpack'
+        }
+    }
+}
+
+/**
+ * Force the android support lib of other dependencies to our android support lib version.
+ * See this link : https://stackoverflow.com/a/42718231
+ * */
+subprojects {
+    project.configurations.all {
+        resolutionStrategy.eachDependency { details ->
+            if (details.requested.group == 'com.android.support'
+                    && !details.requested.name.contains('multidex')) {
+                details.useVersion "$versions.supportLibs"
+            }
+        }
+    }
+}
