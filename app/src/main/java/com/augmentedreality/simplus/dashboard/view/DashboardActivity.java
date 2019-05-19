@@ -1,37 +1,53 @@
 package com.augmentedreality.simplus.dashboard.view;
 
-import android.Manifest;
 import android.content.pm.ActivityInfo;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.NonNull;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.augmentedreality.simplus.R;
+import com.augmentedreality.simplus.dashboard.OnAzimuthChangedListener;
+import com.augmentedreality.simplus.dashboard.OnLocationChangedListener;
 import com.augmentedreality.simplus.dashboard.model.AugmentedPOI;
 import com.augmentedreality.simplus.dashboard.model.MyCurrentAzimuth;
 import com.augmentedreality.simplus.dashboard.model.MyCurrentLocation;
-import com.augmentedreality.simplus.dashboard.OnAzimuthChangedListener;
-import com.augmentedreality.simplus.dashboard.OnLocationChangedListener;
-import com.augmentedreality.simplus.framework.permission.RxPermissionFragment;
-import com.augmentedreality.simplus.util.GpsUtils;
+import com.augmentedreality.simplus.dashboard.presenter.DashboardPresenter;
+import com.augmentedreality.simplus.framework.mvp.SimplusMvpActivity;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DashboardActivity extends AppCompatActivity implements
-                                                         SurfaceHolder.Callback,
-                                                         OnLocationChangedListener,
-                                                         OnAzimuthChangedListener {
+import javax.inject.Inject;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
+import dagger.android.AndroidInjection;
+
+public class DashboardActivity extends SimplusMvpActivity<DashboardView, DashboardPresenter>
+    implements DashboardView,
+               SurfaceHolder.Callback,
+               OnLocationChangedListener,
+               OnAzimuthChangedListener {
+
+    @Inject
+    DashboardPresenter presenter;
+
+
+    @BindView(R.id.latitude) EditText latitude;
+
+    @BindView(R.id.longhitude) EditText longhitude;
 
     private Camera mCamera;
     private SurfaceHolder mSurfaceHolder;
@@ -43,6 +59,7 @@ public class DashboardActivity extends AppCompatActivity implements
     private static double AZIMUTH_ACCURACY = 5;
     private double mMyLatitude = 0;
     private double mMyLongitude = 0;
+    private boolean isFirstStart = true;
 
     private MyCurrentAzimuth myCurrentAzimuth;
     private MyCurrentLocation myCurrentLocation;
@@ -50,63 +67,49 @@ public class DashboardActivity extends AppCompatActivity implements
     TextView descriptionTextView;
     ImageView pointerIcon;
 
-    private RxPermissionFragment rxPermissionFragment;
-
-    private static final String[] PERMISSIONS =
-        new String[]{
-            Manifest.permission.CAMERA,
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.ACCESS_FINE_LOCATION};
+    private Unbinder unbinder;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_camera_view);
+        setContentView(R.layout.activity_dashboard_view);
+        unbinder = ButterKnife.bind(this);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
-        setUpRxPermission();
-
-
-        rxPermissionFragment
-            .request(PERMISSIONS)
-            .subscribe(
-                isGranted -> {
-                    if (isGranted) {
-                        new GpsUtils(this).turnGPSOn(new GpsUtils.onGpsListener() {
-                            @Override
-                            public void gpsStatus(boolean isGPSEnable) {
-                                // turn on GPS
-                            }
-                        });
-                        setupListeners();
-                        setupLayout();
-                        setAugmentedRealityPoint();
-                        startListeners();
-                    } else {
-
-                    }
-                });
-
-
+        setupListeners();
+        setupLayout();
+        setDefaultAugmentedRealityPoint();
     }
 
-    private void setUpRxPermission() {
-        final FragmentManager fm = getSupportFragmentManager();
-        rxPermissionFragment =
-            (RxPermissionFragment) fm.findFragmentByTag(RxPermissionFragment.TAG);
-        if (rxPermissionFragment == null) {
-            rxPermissionFragment = RxPermissionFragment.newInstance();
-            fm.beginTransaction()
-              .add(rxPermissionFragment, RxPermissionFragment.TAG)
-              .commitAllowingStateLoss();
-            fm.executePendingTransactions();
+    @OnClick(R.id.setCoordinatesButton)
+    public void onClickLogin() {
+        if (!latitude.getText().toString().isEmpty()
+                && !longhitude.getText().toString().isEmpty()) {
+            mPoi = new AugmentedPOI(
+                "Simplus",
+                "Simplus Shipping",
+                Double.parseDouble(latitude.getText().toString()),
+                Double.parseDouble(longhitude.getText().toString()));
+            stopListeners();
+            startListeners();
+        } else {
+            Toast.makeText(this, "Empty fields not allowed", Toast.LENGTH_SHORT)
+                 .show();
         }
     }
 
-    private void setAugmentedRealityPoint() {
+    @NonNull
+    @Override
+    public DashboardPresenter createPresenter() {
+        return presenter;
+    }
+
+
+
+    private void setDefaultAugmentedRealityPoint() {
         mPoi = new AugmentedPOI(
-            "Kościół Marciacki",
-            "Kościół Marciacki w Krakowie",
+            "Simplus",
+            "Simplus",
             10.8314471,
             122.5347356
         );
@@ -182,7 +185,8 @@ public class DashboardActivity extends AppCompatActivity implements
         mMyLongitude = location.getLongitude();
         mAzimuthTeoretical = calculateTeoreticalAzimuth();
         Toast.makeText(this,
-                       "latitude: " + location.getLatitude() + " longitude: " + location.getLongitude(),
+                       "latitude: " + location.getLatitude()
+                           + " longitude: " + location.getLongitude(),
                        Toast.LENGTH_SHORT)
              .show();
         updateDescription();
@@ -209,20 +213,16 @@ public class DashboardActivity extends AppCompatActivity implements
 
     @Override
     protected void onStop() {
-        if (myCurrentAzimuth != null) {
-            myCurrentAzimuth.stop();
-        }
-
-        if (myCurrentLocation != null) {
-            myCurrentLocation.stop();
-        }
+        stopListeners();
         super.onStop();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        startListeners();
+        if (!isFirstStart) {
+            startListeners();
+        }
     }
 
     private void setupListeners() {
@@ -243,11 +243,21 @@ public class DashboardActivity extends AppCompatActivity implements
         }
     }
 
+    private void stopListeners() {
+        if (myCurrentAzimuth != null) {
+            myCurrentAzimuth.stop();
+        }
+
+        if (myCurrentLocation != null) {
+            myCurrentLocation.stop();
+        }
+    }
+
     private void setupLayout() {
-        descriptionTextView = (TextView) findViewById(R.id.cameraTextView);
+        descriptionTextView = findViewById(R.id.cameraTextView);
 
         getWindow().setFormat(PixelFormat.UNKNOWN);
-        SurfaceView surfaceView = (SurfaceView) findViewById(R.id.cameraview);
+        SurfaceView surfaceView = findViewById(R.id.cameraview);
         mSurfaceHolder = surfaceView.getHolder();
         mSurfaceHolder.addCallback(this);
         mSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);

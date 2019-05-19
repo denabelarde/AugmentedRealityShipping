@@ -1,4 +1,6 @@
 package com.augmentedreality.simplus.dashboard.view;
 
-public class DashboardView {
+import com.augmentedreality.simplus.framework.mvp.SimplusMvpView;
+
+public interface DashboardView extends SimplusMvpView {
 }

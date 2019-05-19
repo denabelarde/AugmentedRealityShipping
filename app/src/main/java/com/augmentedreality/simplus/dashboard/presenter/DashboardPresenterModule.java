@@ -1,4 +1,12 @@
 package com.augmentedreality.simplus.dashboard.presenter;
 
-public class DashboardPresenterModule {
+import dagger.Binds;
+import dagger.Module;
+
+@Module
+public abstract class DashboardPresenterModule {
+
+    @Binds
+    abstract DashboardPresenter bindDashboard(DefaultDashboardPresenter defaultDashboardPresenter);
+
 }
