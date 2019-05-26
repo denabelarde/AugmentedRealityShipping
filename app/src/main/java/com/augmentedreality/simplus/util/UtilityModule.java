@@ -21,12 +21,6 @@ public abstract class UtilityModule {
         return (MediaProjectionManager) context.getSystemService(Context.MEDIA_PROJECTION_SERVICE);
     }
 
-    @Provides
-    @Singleton
-    static GpsUtils provideGpsUtils(Context context) {
-        return new GpsUtils(context);
-    }
-
     @Binds
     abstract AlertDialogBinder bindAlertDialog(DefaultAlertDialogBinder defaultAlertDialogBinder);
 

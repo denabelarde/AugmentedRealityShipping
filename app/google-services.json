@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "141229560629",
+    "firebase_url": "https://augmentedrealityshipping.firebaseio.com",
+    "project_id": "augmentedrealityshipping",
+    "storage_bucket": "augmentedrealityshipping.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:141229560629:android:f9963f3fa0c379dd",
+        "android_client_info": {
+          "package_name": "com.augmentedreality.simplus"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "141229560629-hi2anrnp2ep506d2kigblqmk0k78cfoa.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.augmentedreality.simplus",
+            "certificate_hash": "c90ae477630702b69d6a316a11a29e011120475d"
+          }
+        },
+        {
+          "client_id": "141229560629-nsi2rqnr4nhpv8jainhkd6jtg4nrivgf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlCVrZu5trG6g8wqlTy0dvHxt0NSFlILM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "141229560629-nsi2rqnr4nhpv8jainhkd6jtg4nrivgf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
