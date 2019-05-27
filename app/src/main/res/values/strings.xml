@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">AR_Shipping</string>
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
@@ -12,4 +11,9 @@
     <string name="set_coordinates">Set Coordinates</string>
     <string name="ok">OK</string>
     <string name="accept_permission">All permission is required to continue!</string>
+    <string name="gps_required">Gps is required to use this app</string>
+    <string name="google_login">Google Login</string>
+    <string name="loading">Loading…</string>
+    <string name="server_authentication_failed">Failed authenticating to server</string>
+    <string name="authentication_failed">Authentication Failed Please restart the app</string>
 </resources>
