@@ -22,6 +22,7 @@ import com.augmentedreality.simplus.dashboard.model.MyCurrentAzimuth;
 import com.augmentedreality.simplus.dashboard.model.MyCurrentLocation;
 import com.augmentedreality.simplus.dashboard.presenter.DashboardPresenter;
 import com.augmentedreality.simplus.framework.mvp.SimplusMvpActivity;
+import com.augmentedreality.simplus.util.GpsUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,7 +44,6 @@ public class DashboardActivity extends SimplusMvpActivity<DashboardView, Dashboa
 
     @Inject
     DashboardPresenter presenter;
-
 
     @BindView(R.id.latitude) EditText latitude;
 
@@ -98,6 +98,14 @@ public class DashboardActivity extends SimplusMvpActivity<DashboardView, Dashboa
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (unbinder != null) {
+            unbinder.unbind();
+        }
+    }
+
     @NonNull
     @Override
     public DashboardPresenter createPresenter() {
@@ -105,13 +113,12 @@ public class DashboardActivity extends SimplusMvpActivity<DashboardView, Dashboa
     }
 
 
-
     private void setDefaultAugmentedRealityPoint() {
         mPoi = new AugmentedPOI(
             "Simplus",
             "Simplus",
-            10.8314471,
-            122.5347356
+            10.8210111,
+            122.5298993
         );
     }
 

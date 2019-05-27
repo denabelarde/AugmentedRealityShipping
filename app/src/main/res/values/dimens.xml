@@ -1,0 +1,65 @@
+<resources>
+
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="streamListUserInfoSpacing">5dp</dimen>
+    <dimen name="streamListTextSpacing">10dp</dimen>
+
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <integer name="anim_duration_very_long">1500</integer>
+    <integer name="anim_duration_long">500</integer>
+    <integer name="anim_duration_medium">300</integer>
+
+    <dimen name="menu_item_icon_size">24dp</dimen>
+    <dimen name="menu_item_size">48dp</dimen>
+    <dimen name="menu_item_ripple_size">48dp</dimen>
+    <dimen name="corner_radius_video">16dp</dimen>
+
+    <dimen name="text_size">16sp</dimen>
+    <dimen name="footer_text_size">12sp</dimen>
+
+    <dimen name="login_join_us">18sp</dimen>
+    <dimen name="login_padding">10dp</dimen>
+
+
+    <dimen name="progress_bar_margin">8dp</dimen>
+    <dimen name="circle_image_width_height">36dp</dimen>
+
+    <dimen name="userprofile_follower_count">25sp</dimen>
+    <dimen name="userprofile_follower_text">15sp</dimen>
+    <dimen name="userprofile_display_name">20sp</dimen>
+    <dimen name="list_item_spacing">16dp</dimen>
+    <dimen name="list_item_spacing_half">8dp</dimen>
+    <dimen name="nav_header_vertical_spacing">8dp</dimen>
+    <dimen name="nav_header_height">176dp</dimen>
+
+    <dimen name="userNameSize">22sp</dimen>
+    <dimen name="userEmailSize">16sp</dimen>
+
+    <!-- User Profile -->
+    <dimen name="otherLinksPadding">10sp</dimen>
+    <dimen name="otherLinksMargin">16sp</dimen>
+    <!-- User Profile -->
+    <dimen name="view_count_icon_width">10dp</dimen>
+    <dimen name="view_count_icon_height">10dp</dimen>
+
+    <!-- margin -->
+    <dimen name="screen_margin">@dimen/_6sdp</dimen>
+
+    <dimen name="grid_spacing">2dp</dimen>
+
+    <dimen name="spacing">2dp</dimen>
+    <dimen name="appbar_padding_top">8dp</dimen>
+    <dimen name="tickmark_size">@dimen/_10sdp</dimen>
+
+    <!-- Padding -->
+    <dimen name="gamestream_item_bottom">@dimen/_1sdp</dimen>
+    <dimen name="gamestream_item_horizontal">@dimen/_3sdp</dimen>
+    <dimen name="gamestream_item_top">0dp</dimen>
+    <dimen name="gamestream_item_featured_bottom">@dimen/_3sdp</dimen>
+    <dimen name="gamestream_item_featured_horizontal">@dimen/_5sdp</dimen>
+    <dimen name="gamestream_item_featured_top">@dimen/_2sdp</dimen>
+
+    <dimen name="stream_controller_margin">20dp</dimen>
+</resources>

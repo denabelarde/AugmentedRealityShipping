@@ -127,7 +127,8 @@ public class LoginActivity extends MvpActivity<LoginView, LoginPresenter>
                 presenter.saveUserDataToDiskCache(true, email, name, photo, idToken);
 
                 firebaseAuthWithGoogle(account);
-            } catch (ApiException e) {
+            } catch (Exception e) {
+                e.printStackTrace();
                 // Google Sign In failed, update UI appropriately
                 Timber.e(e, "Google sign in failed");
                 // [START_EXCLUDE]
