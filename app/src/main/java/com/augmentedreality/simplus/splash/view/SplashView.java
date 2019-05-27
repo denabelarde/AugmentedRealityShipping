@@ -7,6 +7,8 @@ public interface SplashView extends SimplusMvpView {
 
     void navigatetoDashboardScreen();
 
+    void navigateToLoginScreen();
+
     void dismiss();
 
 }
