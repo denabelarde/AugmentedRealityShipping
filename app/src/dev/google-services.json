@@ -15,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "141229560629-hi2anrnp2ep506d2kigblqmk0k78cfoa.apps.googleusercontent.com",
+          "client_id": "141229560629-i9g2l757quc3h7t73ta1qmft6cr5h51k.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.augmentedreality.simplus",
-            "certificate_hash": "c90ae477630702b69d6a316a11a29e011120475d"
+            "certificate_hash": "a8b6d3cb32f30685d475aa7c3a8af3083c8110ca"
           }
         },
         {
