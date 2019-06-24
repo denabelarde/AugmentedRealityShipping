@@ -6,6 +6,10 @@ public class Constants {
 
     public static final int standardScaleSize = 512;
 
+    public interface ACTION {
+        String STARTFOREGROUND_ACTION = "com.augmentedreality.simplus.startforeground";
+        String STOPFOREGROUND_ACTION = "com.augmentedreality.simplus.stopforeground";
+    }
 
     public static final class FirebaseReference {
         public static final String USERS = "users";

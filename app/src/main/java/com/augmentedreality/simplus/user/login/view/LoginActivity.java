@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.augmentedreality.simplus.Constants;
 import com.augmentedreality.simplus.R;
 import com.augmentedreality.simplus.dashboard.view.DashboardActivity;
+import com.augmentedreality.simplus.framework.FusedLocationService;
 import com.augmentedreality.simplus.user.login.presenter.LoginPresenter;
 import com.augmentedreality.simplus.user.model.User;
 import com.augmentedreality.simplus.user.model.Utils;

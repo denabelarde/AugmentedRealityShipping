@@ -1,4 +1,4 @@
-package com.augmentedreality.simplus.util;
+package com.augmentedreality.simplus.framework;
 
 import android.app.Service;
 import android.content.Intent;
@@ -19,7 +19,9 @@ import com.google.android.gms.location.LocationServices;
 import java.text.DateFormat;
 import java.util.Date;
 
-public class GenericService extends Service
+import timber.log.Timber;
+
+public class FusedLocationService extends Service
     implements GoogleApiClient.ConnectionCallbacks, OnConnectionFailedListener, LocationListener {
 
 
@@ -78,11 +80,11 @@ public class GenericService extends Service
     }
 
     public class LocationServiceBinder extends Binder {
-        public GenericService getService() {
+        public FusedLocationService getService() {
             // Return this instance of QueueService so clients can call public
             // methods
 
-            return GenericService.this;
+            return FusedLocationService.this;
 
         }
     }
@@ -203,7 +205,9 @@ public class GenericService extends Service
      */
     @Override
     public void onLocationChanged(Location location) {
-
+        Timber.d("location Changed!!");
+        Timber.d("latitude: " + location.getLatitude());
+        Timber.d("longhitude: " + location.getLongitude());
     }
 
     @Override
