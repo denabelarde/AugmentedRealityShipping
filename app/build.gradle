@@ -1,13 +1,9 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.firebase.firebase-perf'
-apply plugin: 'io.fabric'
 apply plugin: 'kotlin-android'
 apply from: '../gradle/dexcount.gradle'
 apply from: '../gradle/jacoco.gradle'
 apply from: '../gradle/quality.gradle'
-repositories {
-    maven { url 'https://maven.fabric.io/public' }
-}
 
 android {
     compileSdkVersion versions.compileSdk
@@ -105,13 +101,10 @@ android {
     configurations.all {
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
     }
-    buildToolsVersion '27.0.3'
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
-    implementation 'com.android.support:support-v4:28.0.0-alpha1'
     androidTestImplementation libraries.dagger
     androidTestImplementation libraries.supportAnnotations
     androidTestImplementation libraries.supportAppCompat
@@ -146,12 +139,10 @@ dependencies {
     annotationProcessor libraries.daggerProcessor
     annotationProcessor libraries.roomProcessor
 
-    implementation libraries.calligraphy
-    implementation libraries.cardview
-    implementation libraries.constraintLayout
-    implementation(libraries.crashlytics) {
-        transitive = true
-    }
+//    implementation libraries.calligraphy
+//    implementation libraries.cardview
+//    implementation libraries.constraintLayout
+
     implementation libraries.dagger
     implementation libraries.daggerAndroidSupport
     implementation libraries.dataFactory
@@ -159,9 +150,14 @@ dependencies {
     implementation libraries.firebaseMessaging
     implementation libraries.firebaseAuth
     implementation libraries.firebaseStorage
-    implementation libraries.firebaseUI
-    implementation libraries.firebaseDynamicLinks
     implementation libraries.firebasePerformance
+    implementation 'com.firebaseui:firebase-ui-database:5.0.0'
+
+    // FirebaseUI for Firebase Auth
+    implementation 'com.firebaseui:firebase-ui-auth:5.0.0'
+
+    // FirebaseUI for Cloud Storage
+    implementation 'com.firebaseui:firebase-ui-storage:5.0.0'
     implementation libraries.gson
     implementation libraries.lifecycleCommons
     implementation libraries.lifecycleExtensions
@@ -183,10 +179,7 @@ dependencies {
     implementation libraries.picasso
     implementation libraries.googlePlayServicesAuth
     implementation libraries.rx2Firebase
-    implementation 'com.vanniktech:emoji-google:0.5.1'
-    implementation 'com.androidadvance:topsnackbar:1.1.1'
-    implementation 'com.firebase:firebase-jobdispatcher:0.8.5'
-    implementation 'com.google.android.gms:play-services-location:16.0.0'
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
     implementation(libraries.glide) {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
@@ -202,10 +195,6 @@ dependencies {
     }
     testImplementation testLibraries.robolectric
     testImplementation testLibraries.roomMigration
-    //    implementation "com.android.support:support-v13:$supportLibraryVersion"
-    implementation('com.crashlytics.sdk.android:crashlytics:2.9.3@aar') {
-        transitive = true
-    }
 }
 
 apply plugin: 'com.google.gms.google-services'

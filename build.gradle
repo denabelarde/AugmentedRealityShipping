@@ -7,10 +7,7 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        maven {
-            url 'https://maven.fabric.io/public'
-            name 'Fabric'
-        }
+
         maven {
             url 'https://maven.google.com/'
             name 'Google'
@@ -20,11 +17,10 @@ buildscript {
     dependencies {
         classpath gradlePlugins.android
         classpath gradlePlugins.dexcount
-        classpath gradlePlugins.fabricTools
-        classpath gradlePlugins.firebase
         classpath gradlePlugins.googleServices
         classpath gradlePlugins.jacoco
         classpath gradlePlugins.kotlin
+        classpath 'com.google.firebase:perf-plugin:1.2.1'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
