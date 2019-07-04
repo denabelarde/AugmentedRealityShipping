@@ -9,7 +9,6 @@ import com.google.firebase.storage.StorageReference;
 
 import javax.inject.Singleton;
 
-import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 

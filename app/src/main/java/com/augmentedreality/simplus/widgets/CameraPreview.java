@@ -9,7 +9,9 @@ import android.view.SurfaceView;
 import java.io.IOException;
 
 
-import static android.support.constraint.Constraints.TAG;
+import static androidx.constraintlayout.widget.Constraints.TAG;
+
+
 
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
     private SurfaceHolder mHolder;

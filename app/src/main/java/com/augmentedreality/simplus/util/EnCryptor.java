@@ -2,7 +2,6 @@ package com.augmentedreality.simplus.util;
 
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
-import android.support.annotation.NonNull;
 
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
@@ -19,6 +18,8 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
+
+import androidx.annotation.NonNull;
 
 public class EnCryptor {
 

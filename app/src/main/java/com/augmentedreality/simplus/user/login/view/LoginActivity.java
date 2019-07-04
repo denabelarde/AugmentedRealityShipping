@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -13,7 +12,6 @@ import android.widget.Toast;
 import com.augmentedreality.simplus.Constants;
 import com.augmentedreality.simplus.R;
 import com.augmentedreality.simplus.dashboard.view.DashboardActivity;
-import com.augmentedreality.simplus.framework.FusedLocationService;
 import com.augmentedreality.simplus.user.login.presenter.LoginPresenter;
 import com.augmentedreality.simplus.user.model.User;
 import com.augmentedreality.simplus.user.model.Utils;
@@ -35,6 +33,7 @@ import java.util.HashMap;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;

@@ -5,7 +5,6 @@ import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -22,7 +21,6 @@ import com.augmentedreality.simplus.dashboard.model.MyCurrentAzimuth;
 import com.augmentedreality.simplus.dashboard.model.MyCurrentLocation;
 import com.augmentedreality.simplus.dashboard.presenter.DashboardPresenter;
 import com.augmentedreality.simplus.framework.mvp.SimplusMvpActivity;
-import com.augmentedreality.simplus.util.GpsUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,6 +28,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;

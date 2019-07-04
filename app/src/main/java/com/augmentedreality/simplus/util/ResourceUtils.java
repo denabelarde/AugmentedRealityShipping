@@ -4,11 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Build;
-import android.support.annotation.ColorRes;
-import android.support.v7.widget.SearchView;
 import android.util.DisplayMetrics;
 
 import java.util.UUID;
+
+import androidx.annotation.ColorRes;
+import androidx.appcompat.widget.SearchView;
 
 public class ResourceUtils {
 
