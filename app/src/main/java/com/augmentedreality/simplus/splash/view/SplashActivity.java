@@ -1,6 +1,8 @@
 package com.augmentedreality.simplus.splash.view;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -11,16 +13,18 @@ import com.augmentedreality.simplus.framework.permission.RxPermissionFragment;
 import com.augmentedreality.simplus.splash.presenter.SplashPresenter;
 import com.augmentedreality.simplus.user.login.view.LoginActivity;
 import com.augmentedreality.simplus.util.AlertDialogBinder;
+import com.augmentedreality.simplus.util.GpsUtils;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.firebase.auth.FirebaseAuth;
 
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 import dagger.android.AndroidInjection;
-import timber.log.Timber;
+
+
+import static com.augmentedreality.simplus.util.GpsUtils.GPS_REQUEST;
 
 public class SplashActivity extends SimplusMvpActivity<SplashView, SplashPresenter>
     implements SplashView, GoogleApiClient.OnConnectionFailedListener {
@@ -69,42 +73,62 @@ public class SplashActivity extends SimplusMvpActivity<SplashView, SplashPresent
         }
     }
 
-    private void checkPermissions() {
-        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
-            Timber.d("CurrentUser is Null");
-        }
-        presenter.decideWhichScreenToRedirectTo();
+    private void requireGps() {
+//        new GpsUtils(SplashActivity.this).turnGPSOn(isGPSEnable -> {
+//            if (isGPSEnable) {
+//                presenter.decideWhichScreenToRedirectTo();
+//            } else {
+//                alertDialogBinder.showAlertDialog(this,
+//                                                  getString(R.string.gps_required),
+//                                                  getString(R.string.ok),
+//                                                  true,
+//                                                  (dialog, which) -> finish());
+//            }
+//        });
 
-        //        rxPermissionFragment
-//            .request(PERMISSIONS)
-//            .subscribe(
-//                isGranted -> {
-//                    if (isGranted) {
-//                        new GpsUtils(SplashActivity.this).turnGPSOn(isGPSEnable -> {
-//                            //                            if (isGPSEnable) {
-//                            //                                presenter
-//                            // .decideWhichScreenToRedirectTo();
-//                            //                            } else {
-//                            //                                alertDialogBinder.showAlertDialog
-//                            // (this,
-//                            //
-//                            // getString(R.string.accept_permission),
-//                            //
-//                            // getString(R.string.ok),
-//                            //
-//                            // true,
-//                            //
-//                            // (dialog, which) -> dialog.dismiss());
-//                            //                            }
-//                        });
-//                    } else {
-//                        alertDialogBinder.showAlertDialog(this,
-//                                                          getString(R.string.accept_permission),
-//                                                          getString(R.string.ok),
-//                                                          true,
-//                                                          (dialog, which) -> dialog.dismiss());
-//                    }
-//                });
+        new GpsUtils(SplashActivity.this).turnGPSOn(new GpsUtils.onGpsListener() {
+            @Override
+            public void gpsStatus(boolean isGPSEnable) {
+                if (isGPSEnable) {
+                    presenter.decideWhichScreenToRedirectTo();
+                } else {
+                    alertDialogBinder.showAlertDialog(SplashActivity.this,
+                                                      getString(R.string.gps_required),
+                                                      getString(R.string.ok),
+                                                      true,
+                                                      (dialog, which) -> finish());
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.
+                              RESULT_OK) {
+            if (requestCode == GPS_REQUEST) {
+                presenter.decideWhichScreenToRedirectTo();
+            }
+        }
+    }
+
+    @SuppressLint("CheckResult")
+    private void checkPermissions() {
+        rxPermissionFragment
+            .request(PERMISSIONS)
+            .subscribe(
+                isGranted -> {
+                    if (isGranted) {
+                        requireGps();
+                    } else {
+                        alertDialogBinder.showAlertDialog(this,
+                                                          getString(R.string.accept_permission),
+                                                          getString(R.string.ok),
+                                                          true,
+                                                          (dialog, which) -> dialog.dismiss());
+                    }
+                });
     }
 
     @Override
@@ -116,6 +140,15 @@ public class SplashActivity extends SimplusMvpActivity<SplashView, SplashPresent
     @Override
     public SplashPresenter createPresenter() {
         return presenter;
+    }
+
+    @Override
+    public void showGpsNotAcceptedError() {
+        alertDialogBinder.showAlertDialog(this,
+                                          getString(R.string.gps_required),
+                                          getString(R.string.ok),
+                                          true,
+                                          (dialog, which) -> finish());
     }
 
     @Override

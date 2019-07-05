@@ -1,5 +1,6 @@
 package com.augmentedreality.simplus.splash.presenter;
 
+
 import com.augmentedreality.simplus.framework.mvp.DefaultSimplusMvpPresenter;
 import com.augmentedreality.simplus.splash.view.SplashView;
 import com.augmentedreality.simplus.util.rx.RxSchedulerUtils;
@@ -33,6 +34,7 @@ public class DefaultSplashPresenter extends DefaultSimplusMvpPresenter<SplashVie
         super.attachView(view);
         this.view = view;
     }
+
 
     @Override
     public void decideWhichScreenToRedirectTo() {
