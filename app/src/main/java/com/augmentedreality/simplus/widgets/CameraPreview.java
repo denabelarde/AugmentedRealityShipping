@@ -9,7 +9,8 @@ import android.view.SurfaceView;
 import java.io.IOException;
 
 
-import static androidx.constraintlayout.widget.Constraints.TAG;
+import static com.firebase.ui.auth.AuthUI.TAG;
+
 
 
 

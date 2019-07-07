@@ -14,6 +14,7 @@ import com.augmentedreality.simplus.splash.presenter.SplashPresenter;
 import com.augmentedreality.simplus.user.login.view.LoginActivity;
 import com.augmentedreality.simplus.util.AlertDialogBinder;
 import com.augmentedreality.simplus.util.GpsUtils;
+import com.google.android.gms.appinvite.AppInvite;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 
@@ -56,6 +57,7 @@ public class SplashActivity extends SimplusMvpActivity<SplashView, SplashPresent
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        initializeGoogleApiClient();
         setUpRxPermission();
         checkPermissions();
     }
@@ -168,4 +170,10 @@ public class SplashActivity extends SimplusMvpActivity<SplashView, SplashPresent
         finish();
     }
 
+    private void initializeGoogleApiClient() {
+        googleApiClient = new GoogleApiClient.Builder(this)
+                              .enableAutoManage(this, this)
+                              .addApi(AppInvite.API)
+                              .build();
+    }
 }

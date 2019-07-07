@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.google.firebase.firebase-perf'
-apply plugin: 'kotlin-android'
+//apply plugin: 'com.google.firebase.firebase-perf'
 apply from: '../gradle/dexcount.gradle'
 apply from: '../gradle/jacoco.gradle'
 apply from: '../gradle/quality.gradle'
@@ -107,57 +106,19 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     androidTestImplementation libraries.dagger
     androidTestImplementation libraries.supportAnnotations
+    androidTestImplementation libraries.dagger
+    androidTestImplementation libraries.supportAnnotations
     androidTestImplementation libraries.supportAppCompat
     androidTestImplementation libraries.supportDesign
     androidTestImplementation libraries.supportRecyclerView
-    androidTestImplementation testLibraries.assertJ
-    androidTestImplementation testLibraries.dexmaker
-    androidTestImplementation testLibraries.dexmakerDx
-    androidTestImplementation testLibraries.dexmakerMockito
-    androidTestImplementation testLibraries.espressoCore
-    androidTestImplementation testLibraries.espressoIntents
-    androidTestImplementation testLibraries.espressoContrib
-    androidTestImplementation(testLibraries.mockWebServer) {
-        exclude group: 'com.squareup.okhttp3', module: 'okhttp'
-        exclude group: 'com.squareup.okio', module: 'okio'
-    }
-    androidTestImplementation testLibraries.testRules
-    androidTestAnnotationProcessor libraries.daggerCompiler
-    androidTestImplementation testLibraries.testRunner
-    androidTestUtil testLibraries.testOrchestrator
-    implementation libraries.butterknife
-    annotationProcessor libraries.butterknifeCompiler
-    annotationProcessor libraries.glideCompiler
-//    implementation(libraries.butterknife) {
-//        exclude group: 'com.android.support', module: 'support-annotations'
-//        exclude group: 'com.android.support', module: 'support-compat'
-//    }
-//    annotationProcessor(libraries.butterknifeCompiler) {
-//        exclude group: 'com.android.support', module: 'support-annotations'
-//    }
     annotationProcessor libraries.daggerCompiler
     annotationProcessor libraries.daggerProcessor
-    annotationProcessor libraries.roomProcessor
-
-//    implementation libraries.calligraphy
-//    implementation libraries.cardview
-//    implementation libraries.constraintLayout
-
+    implementation libraries.butterknife
+    annotationProcessor libraries.butterknifeCompiler
+    implementation libraries.supportV4
     implementation libraries.dagger
     implementation libraries.daggerAndroidSupport
     implementation libraries.dataFactory
-    implementation libraries.firebaseCore
-    implementation libraries.firebaseMessaging
-    implementation libraries.firebaseAuth
-    implementation libraries.firebaseStorage
-    implementation libraries.firebasePerformance
-    implementation 'com.firebaseui:firebase-ui-database:5.0.0'
-
-    // FirebaseUI for Firebase Auth
-    implementation 'com.firebaseui:firebase-ui-auth:5.0.0'
-
-    // FirebaseUI for Cloud Storage
-    implementation 'com.firebaseui:firebase-ui-storage:5.0.0'
     implementation libraries.gson
     implementation libraries.lifecycleCommons
     implementation libraries.lifecycleExtensions
@@ -176,25 +137,16 @@ dependencies {
     implementation libraries.supportDesign
     implementation libraries.timber
     implementation libraries.sdp
-    implementation libraries.picasso
-    implementation libraries.googlePlayServicesAuth
-    implementation libraries.rx2Firebase
-    implementation 'com.google.android.gms:play-services-location:17.0.0'
-    implementation(libraries.glide) {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    }
+    implementation 'com.google.android.gms:play-services-location:15.0.1'
+    implementation libraries.firebaseCore
+    implementation libraries.firebaseMessaging
+    implementation libraries.firebaseAuth
+    implementation libraries.firebaseStorage
+    implementation libraries.firebaseUI
+//    implementation libraries.firebasePerformance
+    implementation libraries.firebaseDynamicLinks
     debugImplementation debugTools.leakCanary
     releaseImplementation debugTools.leakCanaryRelease
-    testImplementation testLibraries.androidArchitectureCore
-    testImplementation testLibraries.assertJ
-    testImplementation testLibraries.junit
-    testImplementation testLibraries.mockito
-    testImplementation(testLibraries.mockWebServer) {
-        exclude group: 'com.squareup.okhttp3', module: 'okhttp'
-        exclude group: 'com.squareup.okio', module: 'okio'
-    }
-    testImplementation testLibraries.robolectric
-    testImplementation testLibraries.roomMigration
 }
 
 apply plugin: 'com.google.gms.google-services'

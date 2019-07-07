@@ -4,7 +4,8 @@ import android.app.Activity;
 import android.app.Application;
 import android.app.Service;
 
-import com.squareup.leakcanary.BuildConfig;
+
+import com.augmentedreality.simplus.BuildConfig;
 import com.squareup.leakcanary.LeakCanary;
 
 import javax.inject.Inject;

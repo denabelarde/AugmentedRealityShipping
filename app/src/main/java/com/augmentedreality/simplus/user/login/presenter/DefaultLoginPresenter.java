@@ -38,7 +38,6 @@ public class DefaultLoginPresenter extends MvpBasePresenter<LoginView> implement
 
     private FirebaseDatabase firebaseDatabase;
 
-
     private RxSchedulerUtils rxSchedulerUtils;
 
     private DiskCache diskCache;
@@ -138,6 +137,7 @@ public class DefaultLoginPresenter extends MvpBasePresenter<LoginView> implement
     private void getFirebaseUser() {
         String userId = firebaseAuth.getCurrentUser()
                                     .getUid();
+        Timber.d(userId + " <<< firebaseUserId");
         firebaseDatabase
             .getReference(Constants.FirebaseReference.USERS)
             .child(userId)
