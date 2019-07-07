@@ -13,6 +13,7 @@ public class Constants {
 
     public static final class FirebaseReference {
         public static final String USERS = "users";
+        public static final String SHIP_LOCATIONS = "ship_locations";
     }
 
     public static final class DiskCacheKey {

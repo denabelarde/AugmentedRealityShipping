@@ -38,6 +38,7 @@ android {
         dev {
             versionNameSuffix "-DEV"
             buildConfigField "int", "DATABASE_VERSION", versions.database
+            buildConfigField "String", "FIREBASE_URL", '"https://augmentedrealityshipping.firebaseio.com/"'
             dimension "generic"
         }
     }
@@ -147,6 +148,7 @@ dependencies {
     implementation libraries.firebaseDynamicLinks
     debugImplementation debugTools.leakCanary
     releaseImplementation debugTools.leakCanaryRelease
+    implementation libraries.geofire
 }
 
 apply plugin: 'com.google.gms.google-services'
