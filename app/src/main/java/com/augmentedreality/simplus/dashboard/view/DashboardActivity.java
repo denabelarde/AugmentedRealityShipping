@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.augmentedreality.simplus.BuildConfig;
+import com.augmentedreality.simplus.Constants;
 import com.augmentedreality.simplus.R;
 import com.augmentedreality.simplus.dashboard.OnAzimuthChangedListener;
 import com.augmentedreality.simplus.dashboard.OnLocationChangedListener;
@@ -20,7 +22,16 @@ import com.augmentedreality.simplus.dashboard.model.AugmentedPOI;
 import com.augmentedreality.simplus.dashboard.model.MyCurrentAzimuth;
 import com.augmentedreality.simplus.dashboard.model.MyCurrentLocation;
 import com.augmentedreality.simplus.dashboard.presenter.DashboardPresenter;
+import com.augmentedreality.simplus.firebase.FirebaseManager;
 import com.augmentedreality.simplus.framework.mvp.SimplusMvpActivity;
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQuery;
+import com.firebase.geofire.GeoQueryEventListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,6 +45,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import dagger.android.AndroidInjection;
+import timber.log.Timber;
 
 public class DashboardActivity extends SimplusMvpActivity<DashboardView, DashboardPresenter>
     implements DashboardView,
@@ -68,6 +80,14 @@ public class DashboardActivity extends SimplusMvpActivity<DashboardView, Dashboa
 
     private Unbinder unbinder;
 
+    private FirebaseUser firebaseUser;
+
+    private GeoFire geoFire;
+
+    private GeoQuery geoQuery;
+
+    public GeoQueryEventListener geoQueryEventListener;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         AndroidInjection.inject(this);
@@ -75,6 +95,9 @@ public class DashboardActivity extends SimplusMvpActivity<DashboardView, Dashboa
         setContentView(R.layout.activity_dashboard_view);
         unbinder = ButterKnife.bind(this);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        firebaseUser = FirebaseAuth.getInstance()
+                                   .getCurrentUser();
+        setupGeofire();
         setupListeners();
         setupLayout();
         setDefaultAugmentedRealityPoint();
@@ -82,13 +105,19 @@ public class DashboardActivity extends SimplusMvpActivity<DashboardView, Dashboa
 
     @OnClick(R.id.setCoordinatesButton)
     public void onClickLogin() {
-        if (!latitude.getText().toString().isEmpty()
-                && !longhitude.getText().toString().isEmpty()) {
+        if (!latitude.getText()
+                     .toString()
+                     .isEmpty()
+                && !longhitude.getText()
+                              .toString()
+                              .isEmpty()) {
             mPoi = new AugmentedPOI(
                 "Simplus",
                 "Simplus Shipping",
-                Double.parseDouble(latitude.getText().toString()),
-                Double.parseDouble(longhitude.getText().toString()));
+                Double.parseDouble(latitude.getText()
+                                           .toString()),
+                Double.parseDouble(longhitude.getText()
+                                             .toString()));
             stopListeners();
             startListeners();
         } else {
@@ -102,6 +131,10 @@ public class DashboardActivity extends SimplusMvpActivity<DashboardView, Dashboa
         super.onDestroy();
         if (unbinder != null) {
             unbinder.unbind();
+        }
+
+        if (geoQuery != null && geoQueryEventListener != null) {
+            geoQuery.removeAllListeners();
         }
     }
 
@@ -190,12 +223,9 @@ public class DashboardActivity extends SimplusMvpActivity<DashboardView, Dashboa
         mMyLatitude = location.getLatitude();
         mMyLongitude = location.getLongitude();
         mAzimuthTeoretical = calculateTeoreticalAzimuth();
-        Toast.makeText(this,
-                       "latitude: " + location.getLatitude()
-                           + " longitude: " + location.getLongitude(),
-                       Toast.LENGTH_SHORT)
-             .show();
         updateDescription();
+        FirebaseManager.updateShipLocation(firebaseUser.getUid(), mMyLatitude, mMyLongitude);
+        reinstantiateGeofire(mMyLatitude, mMyLongitude);
     }
 
     @Override
@@ -300,5 +330,57 @@ public class DashboardActivity extends SimplusMvpActivity<DashboardView, Dashboa
         mCamera.release();
         mCamera = null;
         isCameraviewOn = false;
+    }
+
+    private void setupGeofire() {
+        geoFire = new GeoFire(FirebaseDatabase.getInstance()
+                                              .getReferenceFromUrl
+                                                   (BuildConfig.FIREBASE_URL
+                                                        + Constants.FirebaseReference.SHIP_LOCATIONS));
+        geoQueryEventListener = new GeoQueryEventListener() {
+            @Override
+            public void onKeyEntered(String key, GeoLocation location) {
+                Timber.d("onKeyEntered + key ---> " + key);
+                mPoi = new AugmentedPOI(
+                    key,
+                    key,
+                    location.latitude,
+                    location.longitude
+                );
+            }
+
+            @Override
+            public void onKeyExited(String key) {
+
+            }
+
+            @Override
+            public void onKeyMoved(String key, GeoLocation location) {
+                mPoi = new AugmentedPOI(
+                    key,
+                    key,
+                    location.latitude,
+                    location.longitude
+                );
+            }
+
+            @Override
+            public void onGeoQueryReady() {
+
+            }
+
+            @Override
+            public void onGeoQueryError(DatabaseError error) {
+
+            }
+        };
+    }
+
+    private void reinstantiateGeofire(double latitude, double longhitude) {
+        if (geoQuery != null && geoQueryEventListener != null) {
+            geoQuery.removeAllListeners();
+        }
+        geoQuery = geoFire.queryAtLocation(new GeoLocation(latitude, longhitude), 20);
+        geoQuery.addGeoQueryEventListener(geoQueryEventListener);
     }
 }
