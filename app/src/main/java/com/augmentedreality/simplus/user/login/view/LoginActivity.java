@@ -140,6 +140,7 @@ public class LoginActivity extends MvpActivity<LoginView, LoginPresenter>
 
     @Override
     public void redirectToDashboard() {
+        finish();
         startActivity(new Intent(this, DashboardActivity.class)
                           .addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
     }

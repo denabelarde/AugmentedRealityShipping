@@ -45,6 +45,7 @@ ext.versions = [
         firebasePerformance  : '16.1.0',
         crashlytics          : '2.9.9',
         googleServices       : '4.0.1',
+        geofire              : '2.1.1',
 
         // Test libraries
         assertJ              : '2.5.0',
@@ -116,7 +117,8 @@ ext.libraries = [
         firebaseUI           : "com.firebaseui:firebase-ui:$versions.firebaseUI",
         firebaseDynamicLinks : "com.google.firebase:firebase-invites:$versions.firebaseDynamicLinks",
         firebasePerformance  : "com.google.firebase:firebase-perf:$versions.firebasePerformance",
-        crashlytics          : "com.crashlytics.sdk.android:crashlytics:$versions.crashlytics"
+        crashlytics          : "com.crashlytics.sdk.android:crashlytics:$versions.crashlytics",
+        geofire              : "com.firebase:geofire-android:$versions.geofire"
 ]
 
 ext.testLibraries = [

@@ -26,6 +26,7 @@
         android:id="@+id/gps_wrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/appbar"
         android:padding="@dimen/_5sdp">
 
@@ -88,7 +89,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:src="@mipmap/ic_launcher"
+        android:src="@drawable/ic_crop_free_red_24dp"
         android:visibility="invisible"/>
 
     <TextView

@@ -41,7 +41,7 @@ public class DefaultSplashPresenter extends DefaultSimplusMvpPresenter<SplashVie
         disposable = Completable.complete()
                                 .delay(2, TimeUnit.SECONDS)
                                 .andThen(checkIfUserHasExistingFirebaseToken())
-                                .doOnError(throwable -> redirectToDashboardScreen()     )
+                                .onErrorResumeNext(throwable -> redirectToDashboardScreen()     )
                                 .compose(rxSchedulerUtils.forCompletable())
                                 .subscribe(view::dismiss);
     }
