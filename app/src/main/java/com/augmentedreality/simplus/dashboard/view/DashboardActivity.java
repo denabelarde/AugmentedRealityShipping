@@ -35,7 +35,9 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -87,6 +89,8 @@ public class DashboardActivity extends SimplusMvpActivity<DashboardView, Dashboa
     private GeoQuery geoQuery;
 
     public GeoQueryEventListener geoQueryEventListener;
+
+    private HashMap<String, Double> azimuthTheoriticalMap = new HashMap<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -154,7 +158,7 @@ public class DashboardActivity extends SimplusMvpActivity<DashboardView, Dashboa
         );
     }
 
-    public double calculateTeoreticalAzimuth() {
+    public double calculateTheoreticalAzimuth() {
         double dX = mPoi.getPoiLatitude() - mMyLatitude;
         double dY = mPoi.getPoiLongitude() - mMyLongitude;
 
@@ -222,7 +226,6 @@ public class DashboardActivity extends SimplusMvpActivity<DashboardView, Dashboa
     public void onLocationChanged(Location location) {
         mMyLatitude = location.getLatitude();
         mMyLongitude = location.getLongitude();
-        mAzimuthTeoretical = calculateTeoreticalAzimuth();
         updateDescription();
         FirebaseManager.updateShipLocation(firebaseUser.getUid(), mMyLatitude, mMyLongitude);
         reinstantiateGeofire(mMyLatitude, mMyLongitude);
@@ -231,21 +234,23 @@ public class DashboardActivity extends SimplusMvpActivity<DashboardView, Dashboa
     @Override
     public void onAzimuthChanged(float azimuthChangedFrom, float azimuthChangedTo) {
         mAzimuthReal = azimuthChangedTo;
-        mAzimuthTeoretical = calculateTeoreticalAzimuth();
 
         pointerIcon = findViewById(R.id.icon);
 
-        double minAngle = calculateAzimuthAccuracy(mAzimuthTeoretical).get(0);
-        double maxAngle = calculateAzimuthAccuracy(mAzimuthTeoretical).get(1);
-
-        if (isBetween(minAngle, maxAngle, mAzimuthReal)) {
-            pointerIcon.setVisibility(View.VISIBLE);
-        } else {
-            pointerIcon.setVisibility(View.INVISIBLE);
+        for (Map.Entry<String, Double> entry : azimuthTheoriticalMap.entrySet()) {
+            double minAngle = calculateAzimuthAccuracy(entry.getValue()).get(0);
+            double maxAngle = calculateAzimuthAccuracy(entry.getValue()).get(1);
+            if (isBetween(minAngle, maxAngle, mAzimuthReal)) {
+                pointerIcon.setVisibility(View.VISIBLE);
+            } else {
+                pointerIcon.setVisibility(View.INVISIBLE);
+            }
         }
 
         updateDescription();
     }
+
+
 
     @Override
     protected void onStop() {
@@ -347,11 +352,12 @@ public class DashboardActivity extends SimplusMvpActivity<DashboardView, Dashboa
                     location.latitude,
                     location.longitude
                 );
+                azimuthTheoriticalMap.put(key, calculateTheoreticalAzimuth());
             }
 
             @Override
             public void onKeyExited(String key) {
-
+                azimuthTheoriticalMap.remove(key);
             }
 
             @Override
@@ -362,6 +368,7 @@ public class DashboardActivity extends SimplusMvpActivity<DashboardView, Dashboa
                     location.latitude,
                     location.longitude
                 );
+                azimuthTheoriticalMap.put(key, calculateTheoreticalAzimuth());
             }
 
             @Override
@@ -382,5 +389,9 @@ public class DashboardActivity extends SimplusMvpActivity<DashboardView, Dashboa
         }
         geoQuery = geoFire.queryAtLocation(new GeoLocation(latitude, longhitude), 20);
         geoQuery.addGeoQueryEventListener(geoQueryEventListener);
+    }
+
+    private void updateTargetDetails() {
+
     }
 }
