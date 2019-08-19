@@ -149,6 +149,7 @@ dependencies {
     debugImplementation debugTools.leakCanary
     releaseImplementation debugTools.leakCanaryRelease
     implementation libraries.geofire
+    implementation libraries.rx2Firebase
 }
 
 apply plugin: 'com.google.gms.google-services'

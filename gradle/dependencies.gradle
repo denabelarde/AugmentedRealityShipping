@@ -46,6 +46,7 @@ ext.versions = [
         crashlytics          : '2.9.9',
         googleServices       : '4.0.1',
         geofire              : '2.1.1',
+        rx2Firebase          : '1.5.0',
 
         // Test libraries
         assertJ              : '2.5.0',
@@ -118,7 +119,8 @@ ext.libraries = [
         firebaseDynamicLinks : "com.google.firebase:firebase-invites:$versions.firebaseDynamicLinks",
         firebasePerformance  : "com.google.firebase:firebase-perf:$versions.firebasePerformance",
         crashlytics          : "com.crashlytics.sdk.android:crashlytics:$versions.crashlytics",
-        geofire              : "com.firebase:geofire-android:$versions.geofire"
+        geofire              : "com.firebase:geofire-android:$versions.geofire",
+        rx2Firebase          : "com.github.FrangSierra:RxFirebase:$versions.rx2Firebase",
 ]
 
 ext.testLibraries = [
