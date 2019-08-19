@@ -24,6 +24,7 @@ import com.augmentedreality.simplus.dashboard.model.MyCurrentLocation;
 import com.augmentedreality.simplus.dashboard.presenter.DashboardPresenter;
 import com.augmentedreality.simplus.firebase.FirebaseManager;
 import com.augmentedreality.simplus.framework.mvp.SimplusMvpActivity;
+import com.augmentedreality.simplus.user.model.User;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
@@ -31,6 +32,7 @@ import com.firebase.geofire.GeoQueryEventListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
@@ -47,7 +49,12 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import dagger.android.AndroidInjection;
+import durdinapps.rxfirebase2.RxFirebaseDatabase;
+import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
+
+
+import static com.augmentedreality.simplus.Constants.FirebaseReference.USERS;
 
 public class DashboardActivity extends SimplusMvpActivity<DashboardView, DashboardPresenter>
     implements DashboardView,
@@ -61,6 +68,14 @@ public class DashboardActivity extends SimplusMvpActivity<DashboardView, Dashboa
     @BindView(R.id.latitude) EditText latitude;
 
     @BindView(R.id.longhitude) EditText longhitude;
+
+    @BindView(R.id.pointer_icon) ImageView pointerIcon;
+
+    @BindView(R.id.userid) TextView userId;
+
+    @BindView(R.id.email) TextView email;
+
+    @BindView(R.id.name) TextView name;
 
     private Camera mCamera;
     private SurfaceHolder mSurfaceHolder;
@@ -78,7 +93,6 @@ public class DashboardActivity extends SimplusMvpActivity<DashboardView, Dashboa
     private MyCurrentLocation myCurrentLocation;
 
     TextView descriptionTextView;
-    ImageView pointerIcon;
 
     private Unbinder unbinder;
 
@@ -91,6 +105,10 @@ public class DashboardActivity extends SimplusMvpActivity<DashboardView, Dashboa
     public GeoQueryEventListener geoQueryEventListener;
 
     private HashMap<String, Double> azimuthTheoriticalMap = new HashMap<>();
+
+    private DatabaseReference usersReference;
+
+    private Disposable userFirebaseDisposable;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -139,6 +157,10 @@ public class DashboardActivity extends SimplusMvpActivity<DashboardView, Dashboa
 
         if (geoQuery != null && geoQueryEventListener != null) {
             geoQuery.removeAllListeners();
+        }
+
+        if (userFirebaseDisposable != null && !userFirebaseDisposable.isDisposed()) {
+            userFirebaseDisposable.dispose();
         }
     }
 
@@ -235,13 +257,12 @@ public class DashboardActivity extends SimplusMvpActivity<DashboardView, Dashboa
     public void onAzimuthChanged(float azimuthChangedFrom, float azimuthChangedTo) {
         mAzimuthReal = azimuthChangedTo;
 
-        pointerIcon = findViewById(R.id.icon);
-
         for (Map.Entry<String, Double> entry : azimuthTheoriticalMap.entrySet()) {
             double minAngle = calculateAzimuthAccuracy(entry.getValue()).get(0);
             double maxAngle = calculateAzimuthAccuracy(entry.getValue()).get(1);
             if (isBetween(minAngle, maxAngle, mAzimuthReal)) {
                 pointerIcon.setVisibility(View.VISIBLE);
+                pullTargetDetails(entry.getKey());
             } else {
                 pointerIcon.setVisibility(View.INVISIBLE);
             }
@@ -391,7 +412,25 @@ public class DashboardActivity extends SimplusMvpActivity<DashboardView, Dashboa
         geoQuery.addGeoQueryEventListener(geoQueryEventListener);
     }
 
-    private void updateTargetDetails() {
+    private void clearTargetDetails() {
+        email.setText("");
+        userId.setText("");
+        name.setText("");
+    }
 
+    private void pullTargetDetails(String key) {
+        usersReference = FirebaseDatabase.getInstance()
+                                         .getReference(USERS)
+                                         .child(key);
+        userFirebaseDisposable = RxFirebaseDatabase
+            .observeSingleValueEvent(usersReference, User.class)
+            .subscribe(this::processUserDetails,
+                       throwable -> {});
+    }
+
+    private void processUserDetails(User user) {
+        email.setText("Email: " + user.getEmail());
+        userId.setText("UserId: " + user.getFbUserId());
+        name.setText("Name: " + user.getFullName());
     }
 }
